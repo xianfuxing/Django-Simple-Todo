@@ -5,13 +5,24 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from .models import Todo
 
+from django.views.generic import ListView
 
-def todolist(request):
-    todolist = Todo.objects.filter(flag=1)
-    finishtodos = Todo.objects.filter(flag=0)
-    return render(request, 'todo/simpleTodo.html',
-                          {'todolist': todolist,
-                           'finishtodos': finishtodos})
+
+
+class TodoListView(ListView):
+    template_name = 'todo/simpleTodo.html'
+
+    context_object_name = 'todo_list'
+
+    def get_queryset(self):
+        return Todo.objects.filter(flag=1)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(TodoListView, self).get_context_data(**kwargs)
+        ctx['finished_todo_list'] = Todo.objects.filter(flag=0)
+
+        return ctx
+
 
 def todofinish(request, id=''):
     todo = Todo.objects.get(id=id)
