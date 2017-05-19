@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from .models import Todo
 
-from django.views.generic import ListView
+from django.views import View
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import ListView, UpdateView
 
 
 
@@ -24,15 +26,26 @@ class TodoListView(ListView):
         return ctx
 
 
-def todofinish(request, id=''):
-    todo = Todo.objects.get(id=id)
-    if todo.flag == '1':
-        todo.flag = '0'
-        todo.save()
+# def todofinish(request, id=''):
+#     todo = Todo.objects.get(id=id)
+#     if todo.flag == '1':
+#         todo.flag = '0'
+#         todo.save()
+#         return HttpResponseRedirect('/todos/')
+#     todolist = Todo.objects.filter(flag=1)
+#     return render(request, 'todo/simpleTodo.html',
+#                            {'todolist': todolist})
+
+class TodoFinishView(SingleObjectMixin, View):
+    model = Todo
+    success_url = '/todos/'
+
+    def get(self, request, *args, **kwargs):
+        todo = self.get_object()
+        if todo.flag == '1':
+            todo.flag = '0'
+            todo.save()
         return HttpResponseRedirect('/todos/')
-    todolist = Todo.objects.filter(flag=1)
-    return render(request, 'todo/simpleTodo.html',
-                           {'todolist': todolist})
 
 def todoback(request, id=''):
     todo = Todo.objects.get(id=id)
