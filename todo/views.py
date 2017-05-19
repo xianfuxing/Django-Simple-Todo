@@ -26,16 +26,6 @@ class TodoListView(ListView):
         return ctx
 
 
-# def todofinish(request, id=''):
-#     todo = Todo.objects.get(id=id)
-#     if todo.flag == '1':
-#         todo.flag = '0'
-#         todo.save()
-#         return HttpResponseRedirect('/todos/')
-#     todolist = Todo.objects.filter(flag=1)
-#     return render(request, 'todo/simpleTodo.html',
-#                            {'todolist': todolist})
-
 class TodoFinishView(SingleObjectMixin, View):
     model = Todo
     success_url = '/todos/'
@@ -47,14 +37,17 @@ class TodoFinishView(SingleObjectMixin, View):
             todo.save()
         return HttpResponseRedirect('/todos/')
 
-def todoback(request, id=''):
-    todo = Todo.objects.get(id=id)
-    if todo.flag == '0':
-        todo.flag = '1'
-        todo.save()
+class TodoBackView(SingleObjectMixin, View):
+    model = Todo
+    success_url = '/todos/'
+
+    def get(self, request, *args, **kwargs):
+        todo = self.get_object()
+        if todo.flag == '0':
+            todo.flag = '1'
+            todo.save()
         return HttpResponseRedirect('/todos/')
-    todolist = Todo.objects.filter(flag=1)
-    return render(request, 'todo/simpleTodo.html', {'todolist': todolist})
+
 
 def tododelete(request, id=''):
     try:
