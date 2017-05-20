@@ -7,7 +7,7 @@ from .models import Todo
 
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, DeleteView
 
 
 
@@ -49,16 +49,14 @@ class TodoBackView(SingleObjectMixin, View):
         return HttpResponseRedirect('/todos/')
 
 
-def tododelete(request, id=''):
-    try:
-        todo = Todo.objects.get(id=id)
-    except Exception:
-        raise Http404
-    if todo:
-        todo.delete()
-        return HttpResponseRedirect('/todos/')
-    todolist = Todo.objects.filter(flag=1)
-    return render(reqeust, 'todo/simpleTodo.html', {'todolist': todolist})
+class TodoDeleteView(DeleteView):
+    model = Todo
+    template_name = 'todo/todo_confirm_delete.html'
+    success_url = '/todos/'
+
+    # def get(self, request, *args, **kwargs):
+    #     return self.post(request, *args, **kwargs)
+
 
 def addTodo(request):
     if request.method == 'POST':

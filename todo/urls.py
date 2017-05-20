@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^todofinish/(?P<pk>\d+)/$', views.TodoFinishView.as_view(), name='finish'),
     url(r'^todobackout/(?P<pk>\d+)/$', views.TodoBackView.as_view(),  name='backout'),
     url(r'^updatetodo/(?P<id>\d+)/$', views.updatetodo, name='update'),
-    url(r'^tododelete/(?P<id>\d+)/$', views.tododelete, name='delete'),
+    url(r'^tododelete/(?P<pk>\d+)/$', views.TodoDeleteView.as_view(), name='delete'),
 ]
