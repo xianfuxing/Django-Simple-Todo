@@ -106,6 +106,7 @@
         </div>
         <form action="" method="post">{% csrf_token %}
         <div class="modal-body">
+        {% comment %}
             <textarea name="todo" class="txtodo" id="txtodo" required="required">{{ todo.todo }}</textarea>
             <fieldset>
                 <label class="radio inline" for="priority">
@@ -124,6 +125,8 @@
                     <span class="label label-info">一般</span>
                 </label>
             </fieldset>
+            {% endcomment %}
+            {{ form.as_p }}
         </div>
         <div class="modal-footer">
             <button class="btn"  data-dismiss="modal" aria-hidden="true">Close</button>

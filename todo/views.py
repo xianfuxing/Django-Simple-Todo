@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.http import Http404
 from .models import Todo
+from .forms import TodoForm
 
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
@@ -60,22 +61,37 @@ class TodoDeleteView(DeleteView):
 
 def addTodo(request):
     if request.method == 'POST':
+        user = User.objects.get(id='1')
         atodo = request.POST['todo']
         priority = request.POST['priority']
-        user = User.objects.get(id='1')
-        todo = Todo(user=user, todo=atodo, priority=priority, flag='1')
-        todo.save()
+
+        form = TodoForm(data=request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = user
+            form.todo = atodo
+            form.priority = priority
+            form.flag = '1'
+            form.save()
+
         todolist = Todo.objects.filter(flag='1')
         finishtodos = Todo.objects.filter(flag=0)
         return render(request, 'todo/showtodo.html',
                               {'todolist': todolist, 
-                               'finishtodos': finishtodos})
+                               'finishtodos': finishtodos,
+                               'form': form})
     else:
+        form = TodoForm()
+
         todolist = Todo.objects.filter(flag=1)
         finishtodos = Todo.objects.filter(flag=0)
         return render(request, 'todo/simpleTodo.html',
                               {'todolist': todolist, 
+                               'form': form,
                                'finishtodos': finishtodos})
+
+
+
 
 def updatetodo(request, id=''):
     if request.method == 'POST':
