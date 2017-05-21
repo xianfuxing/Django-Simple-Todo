@@ -9,7 +9,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for todo in todolist %}
+        {% for todo in todo_list %}
         {% if todo.priority == '1' %}
         <tr class='error'>
         {% endif %}
@@ -29,7 +29,7 @@
             </td>
         </tr>
         {% endfor %}
-        {% for ftodo in finishtodos %}
+        {% for ftodo in finished_todo_list %}
         <tr class='success'>
             <td class="ftodo muted">{{ ftodo.todo }}</td>
             <td class="te">

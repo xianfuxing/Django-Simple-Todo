@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -8,7 +8,7 @@ from .forms import TodoForm
 
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, CreateView
 
 
 
@@ -23,6 +23,7 @@ class TodoListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super(TodoListView, self).get_context_data(**kwargs)
         ctx['finished_todo_list'] = Todo.objects.filter(flag=0)
+        ctx['form'] = TodoForm()
 
         return ctx
 
@@ -59,38 +60,29 @@ class TodoDeleteView(DeleteView):
     #     return self.post(request, *args, **kwargs)
 
 
-def addTodo(request):
-    if request.method == 'POST':
-        user = User.objects.get(id='1')
-        atodo = request.POST['todo']
-        priority = request.POST['priority']
+class TodoAddView(CreateView):
+    form_class = TodoForm
 
-        form = TodoForm(data=request.POST)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.user = user
-            form.todo = atodo
-            form.priority = priority
-            form.flag = '1'
-            form.save()
+    def form_valid(self, form):
+        todo = form.save(commit=False)
+        todo.user = User.objects.get(id='1')
+        todo.flag = '1'
+        todo.save()
 
-        todolist = Todo.objects.filter(flag='1')
-        finishtodos = Todo.objects.filter(flag=0)
-        return render(request, 'todo/showtodo.html',
-                              {'todolist': todolist, 
-                               'finishtodos': finishtodos,
-                               'form': form})
-    else:
-        form = TodoForm()
+        return self.render_to_response(self.get_context_data(form=form))
 
-        todolist = Todo.objects.filter(flag=1)
-        finishtodos = Todo.objects.filter(flag=0)
-        return render(request, 'todo/simpleTodo.html',
-                              {'todolist': todolist, 
-                               'form': form,
-                               'finishtodos': finishtodos})
+    def get_template_names(self):
+        if self.request.method == 'POST':
+            return ['todo/showtodo.html']
+        if self.request.method == 'GET':
+            return ['todo/simpleTodo.html']
 
+    def get_context_data(self, **kwargs):
+        ctx = super(TodoAddView, self).get_context_data(**kwargs)
+        ctx['finished_todo_list'] = Todo.objects.filter(flag=0)
+        ctx['todo_list'] = Todo.objects.filter(flag=1)
 
+        return ctx
 
 
 def updatetodo(request, id=''):
