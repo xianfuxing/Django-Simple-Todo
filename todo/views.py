@@ -69,7 +69,7 @@ class TodoAddView(CreateView):
         todo.flag = '1'
         todo.save()
 
-        return self.render_to_response(self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data())
 
     def get_template_names(self):
         if self.request.method == 'POST':
