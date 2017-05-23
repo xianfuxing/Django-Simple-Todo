@@ -62,6 +62,7 @@ class TodoDeleteView(DeleteView):
 
 class TodoAddView(CreateView):
     form_class = TodoForm
+    model = Todo
 
     def form_valid(self, form):
         todo = form.save(commit=False)
