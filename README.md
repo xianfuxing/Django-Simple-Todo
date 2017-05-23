@@ -18,4 +18,5 @@ clone 下代码 只需执行下面的命令
     python manage.py createsuperuser
 
 Note: 本仓库已将function view 改为 class view
+
 说明： http://www.cnblogs.com/cacique/archive/2012/10/06/2713415.html
