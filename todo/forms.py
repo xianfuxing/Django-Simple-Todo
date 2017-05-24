@@ -14,7 +14,6 @@ class TodoForm(forms.ModelForm):
 		super(TodoForm, self).__init__(*args, **kwargs)
 		self.fields['todo'].help_text = '添加Todo'
 
-	
 	class Meta:
 		model = Todo
 		fields = ['todo', 'priority']

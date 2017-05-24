@@ -8,7 +8,7 @@ from .forms import TodoForm
 
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView, DeleteView, CreateView
+from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 
 
 
@@ -86,22 +86,14 @@ class TodoAddView(CreateView):
         return ctx
 
 
-def updatetodo(request, id=''):
-    if request.method == 'POST':
-        try:
-            todo = Todo.objects.get(id=id)
-        except Exception:
-            return HttpResponseRedirect('/todos/')
-        atodo = request.POST['todo']
-        priority = request.POST['priority']
-        todo.todo = atodo
-        todo.priority = priority
-        todo.save()
-        return HttpResponseRedirect('/todos/')
-    else:
-        try:
-            todo = Todo.objects.get(id=id)
-        except Exception:
-            raise Http404
-        return render(request, 'todo/updatetodo.html', {'todo': todo})
+class UdateTodoView(UpdateView):
+    form_class = TodoForm
+    model = Todo
+    template_name = 'todo/updatetodo.html'
+    success_url = '/todos/'
 
+    # def get_initial(self):
+    #     initial = super(UpdateView, self).get_initial()
+    #     initial['todo'] = Todo.objects.get(pk=self.kwargs.get('pk'))
+
+    #     return initial
